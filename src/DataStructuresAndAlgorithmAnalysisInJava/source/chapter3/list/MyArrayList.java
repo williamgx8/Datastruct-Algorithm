@@ -26,7 +26,7 @@ public class MyArrayList<T> implements Iterable<T> {
     /**
      * 在指定位置替换原有元素
      *
-     * @param data 替换元素
+     * @param data  替换元素
      * @param index 替换位置
      * @return 被替换元素
      */
@@ -50,7 +50,48 @@ public class MyArrayList<T> implements Iterable<T> {
      */
     public void add(T data) {
         ensureCapacity();
+        addLast(data);
+    }
+
+    private void addLast(T data) {
         items[size++] = data;
+    }
+
+    /**
+     * 在指定位置添加元素
+     *
+     * @param data
+     * @param index
+     */
+    public void add(int index, T data) {
+        if (index > this.size)
+            throw new IndexOutOfBoundsException();
+        ensureCapacity();
+        if (index == this.size) {
+            addLast(data);
+        } else {
+            System.arraycopy(items, index, items, index + 1, size - index);
+            items[index] = data;
+            size++;
+        }
+    }
+
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
+    /**
+     * 移除指定位置元素
+     *
+     * @param index 删除元素索引
+     * @return 被删除的元素
+     */
+    public T remove(int index) {
+        validateIndexRange(index);
+        T old = (T) items[index];
+        System.arraycopy(items, index + 1, items, index, size - index);
+        size--;
+        return old;
     }
 
     /**
@@ -62,11 +103,14 @@ public class MyArrayList<T> implements Iterable<T> {
         return this.size;
     }
 
+    /**
+     * 扩充原数组容量
+     */
     private void ensureCapacity() {
         if (DEFAULT_SIZE > this.size) {
             return;
         }
-        int newLength = this.size + DEFAULT_SIZE >> 1;
+        int newLength = this.size + (DEFAULT_SIZE >> 1);
         Object[] newItems = new Object[newLength];
         System.arraycopy(items, 0, newItems, 0, size);
         items = newItems;
@@ -84,14 +128,17 @@ public class MyArrayList<T> implements Iterable<T> {
     }
 
     private class Iter<T> implements Iterator<T> {
+        int cursor;
 
         @Override
         public boolean hasNext() {
-            return false;
+            return cursor < size - 1;
         }
 
         @Override
         public T next() {
+            if (cursor <= size - 1)
+                return (T) items[cursor++];
             return null;
         }
     }

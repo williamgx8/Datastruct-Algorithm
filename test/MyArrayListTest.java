@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class MyArrayListTest {
@@ -18,8 +19,9 @@ public class MyArrayListTest {
     @Test
     public void fun1() {
         List<Integer> list = new ArrayList<>();
-//        list.add(1);
-//        list.add(2);
+        list.add(1);
+        list.add(2);
+        list.add(2, 3);
         System.out.println(list);
     }
 
@@ -56,5 +58,37 @@ public class MyArrayListTest {
         list.add(0);
         Assert.assertEquals("[0, 0, 0, 0, 0]", list.toString());
         Assert.assertEquals(5, list.size());
+    }
+
+    @Test
+    public void addIndex() {
+        list.add(1);
+        list.add(0, 2);
+        Assert.assertEquals("[2, 1]", list.toString());
+        list.add(2, 5);
+        Assert.assertEquals("[2, 1, 5]", list.toString());
+    }
+
+    @Test
+    public void normalRemove() {
+        list.add(1);
+        list.add(0, 3);
+        list.add(4);
+        Integer remove = list.remove(1);
+        Assert.assertEquals(1, (long) remove);
+        Assert.assertEquals("[3, 4]", list.toString());
+
+    }
+
+
+    @Test
+    public void iteratorTest() {
+        list.add(2);
+        list.add(1);
+        list.add(5);
+        list.add(0);
+        Iterator<Integer> iterator = list.iterator();
+        while (iterator.hasNext())
+            System.out.println(iterator.next());
     }
 }
