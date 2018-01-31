@@ -80,15 +80,22 @@ public class MyArrayListTest {
 
     }
 
-
     @Test
     public void iteratorTest() {
         list.add(2);
         list.add(1);
         list.add(5);
         list.add(0);
-        Iterator<Integer> iterator = list.iterator();
-        while (iterator.hasNext())
-            System.out.println(iterator.next());
+        for (Integer ele : list) {
+            System.out.println(ele);
+        }
+    }
+
+    @Test
+    public void getTest() {
+        list.add(0);
+        list.add(2);
+        list.add(1);
+        Assert.assertEquals(2, (long) list.get(1));
     }
 }

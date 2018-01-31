@@ -3,7 +3,7 @@ package DataStructuresAndAlgorithmAnalysisInJava.source.chapter3.list;
 import java.util.Iterator;
 
 public class MyArrayList<T> implements Iterable<T> {
-    private final int DEFAULT_SIZE = 4;
+    private final int DEFAULT_SIZE = 10;
     private Object[] items = new Object[DEFAULT_SIZE];
     private int size;
 
@@ -26,7 +26,7 @@ public class MyArrayList<T> implements Iterable<T> {
     /**
      * 在指定位置替换原有元素
      *
-     * @param data  替换元素
+     * @param data 替换元素
      * @param index 替换位置
      * @return 被替换元素
      */
@@ -64,8 +64,9 @@ public class MyArrayList<T> implements Iterable<T> {
      * @param index
      */
     public void add(int index, T data) {
-        if (index > this.size)
+        if (index > this.size) {
             throw new IndexOutOfBoundsException();
+        }
         ensureCapacity();
         if (index == this.size) {
             addLast(data);
@@ -132,13 +133,14 @@ public class MyArrayList<T> implements Iterable<T> {
 
         @Override
         public boolean hasNext() {
-            return cursor < size - 1;
+            return cursor < size;
         }
 
         @Override
         public T next() {
-            if (cursor <= size - 1)
+            if (cursor < size) {
                 return (T) items[cursor++];
+            }
             return null;
         }
     }
