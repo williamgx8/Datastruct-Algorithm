@@ -143,6 +143,13 @@ public class MyArrayList<T> implements Iterable<T> {
             }
             return null;
         }
+
+        public void remove() {
+            if (cursor <= 0) {
+                throw new IllegalStateException();
+            }
+            MyArrayList.this.remove(--cursor);
+        }
     }
 
     @Override

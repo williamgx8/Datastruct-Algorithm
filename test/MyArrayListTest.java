@@ -19,10 +19,11 @@ public class MyArrayListTest {
     @Test
     public void fun1() {
         List<Integer> list = new ArrayList<>();
-        list.add(1);
-        list.add(2);
-        list.add(2, 3);
-        System.out.println(list);
+//        list.add(1);
+//        list.add(2);
+//        list.add(2, 3);
+        Iterator<Integer> iterator = list.iterator();
+        iterator.remove();
     }
 
     @Test
