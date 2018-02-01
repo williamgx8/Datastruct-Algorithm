@@ -1,5 +1,7 @@
 package DataStructuresAndAlgorithmAnalysisInJava.source.chapter3.link;
 
+import com.sun.istack.internal.NotNull;
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -91,14 +93,14 @@ public class MyLinkedList<T> implements Iterable<T> {
         Node temp = first;
         if (null == ele) {
             for (int i = 0; i < size; i++) {
-                if (null == ele) {
+                if (null == temp.data) {
                     return i;
                 }
                 temp = temp.next;
             }
         } else {
             for (int i = 0; i < size; i++) {
-                if (ele.equals(first.data)) {
+                if (ele.equals(temp.data)) {
                     return i;
                 }
                 temp = temp.next;
@@ -109,7 +111,7 @@ public class MyLinkedList<T> implements Iterable<T> {
 
     public T get(int index) {
         checkRange(index);
-        int half = this.size / 2;
+        int half = this.size >> 2;
         Node temp;
         if (half < index) {
             temp = last;
@@ -132,6 +134,22 @@ public class MyLinkedList<T> implements Iterable<T> {
     }
 
     public T set(int index, T ele) {
+        checkBoundary(index);
+        int half = this.size >> 1;
+        if (index > half) {
+            for (int i = size - 1; i > half; i--) {
+                if (i == index) {
+                }
+            }
+        } else {
+            Node temp = first;
+            for (int i = 0; i <= half; i++) {
+                if (i == index) {
+                    T old = (T) temp.data;
+
+                }
+            }
+        }
         return null;
     }
 
@@ -140,9 +158,7 @@ public class MyLinkedList<T> implements Iterable<T> {
     }
 
     public T remove(int index) {
-        checkBoundary(index);
-
-        return null;
+        return unlink(index);
     }
 
     private void checkRange(int index) {
@@ -155,6 +171,96 @@ public class MyLinkedList<T> implements Iterable<T> {
         if (index >= size || index < 0) {
             throw new NoSuchElementException();
         }
+    }
+
+    private T unlink(int index) {
+        checkBoundary(index);
+        if (index == 0) {
+            return removeFirst();
+        } else if (index == size - 1) {
+            return removeLast();
+        } else {
+            int half = this.size >> 1;
+            if (index > half) {
+                Node temp = last;
+                for (int i = size - 1; i > half; i--) {
+                    if (index == i) {
+                        temp.next.prev = temp.prev;
+                        temp.prev.next = temp.next;
+                        size--;
+                        return (T) temp.data;
+                    }
+                    temp = temp.prev;
+                }
+            } else {
+                Node temp = first;
+                for (int i = 0; i <= half; i++) {
+                    if (index == i) {
+                        temp.next.prev = temp.prev;
+                        temp.prev.next = temp.next;
+                        size--;
+                        return (T) temp.data;
+                    }
+                    temp = temp.next;
+                }
+            }
+        }
+        return null;
+    }
+
+    private T unlink(@NotNull Node node) {
+        T old = (T) node.data;
+        Node prev = node.prev;
+        Node next = node.next;
+        /**
+         * 只考虑前节点的后向指针
+         */
+        if (prev == null) {
+            first = next;
+        } else {
+            prev.next = next;
+            //此时完成了前向指针的脱离，原来的前向指针就没有用了，置空加速垃圾回收
+            node.prev = null;
+        }
+
+        /**
+         * 只考虑后节点的前向指针
+         */
+        if (next == null) {
+            last = null;
+        } else {
+            next.prev = prev;
+            node.next = null;
+        }
+
+        /**
+         * 老思路：指针的逻辑合在一起
+         */
+
+        /*
+            if(node.next==null){
+                if(node.prev == null){
+                    //只有待删除节点一个节点
+                }else{
+                    //待删除节点是尾节点
+                    node.prev.next = null;
+                    last = node.prev;
+                }
+            }else{
+                if(node.prev == null){
+                    //待删除节点是首节点
+                     node.next.prev = null;
+                     first = node.next;
+                }else{
+                    //中间节点
+                    node.next.prev = node.prev;
+                    node.prev.next = node.next;
+                }
+            }
+
+         */
+
+        return old;
     }
 
     private class Node<T> {

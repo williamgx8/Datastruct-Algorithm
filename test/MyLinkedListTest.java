@@ -11,9 +11,11 @@ public class MyLinkedListTest {
     @Test
     public void fun() {
         LinkedList<Integer> linkedList = new LinkedList<>();
+        linkedList.add(2);
+//        linkedList.set(1, 1);
 //        linkedList.removeFirst();
-        linkedList.getFirst();
-        System.out.println(linkedList);
+//        linkedList.getFirst();
+//        System.out.println(linkedList);
     }
 
     MyLinkedList<Integer> list;
@@ -114,6 +116,14 @@ public class MyLinkedListTest {
     public void containsTest() {
         Assert.assertEquals(true, list.contains(3));
         Assert.assertEquals(false, list.contains(8));
-        Assert.assertEquals(false,list.contains(null));
+        Assert.assertEquals(false, list.contains(null));
     }
+
+    @Test
+    public void remove() {
+        Integer remove = list.remove(1);
+        Assert.assertEquals(2, (long) remove);
+        Assert.assertEquals("[1, 3]", list.toString());
+    }
+
 }
