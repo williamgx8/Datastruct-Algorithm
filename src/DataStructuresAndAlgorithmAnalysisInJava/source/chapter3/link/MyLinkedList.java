@@ -1,6 +1,7 @@
 package DataStructuresAndAlgorithmAnalysisInJava.source.chapter3.link;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class MyLinkedList<T> implements Iterable<T> {
     private int size;
@@ -8,31 +9,67 @@ public class MyLinkedList<T> implements Iterable<T> {
     private Node<T> last;
 
     public T getFirst() {
-        return null;
+        checkBoundary(0);
+        return first.data;
     }
 
     public T getLast() {
-        return null;
+        checkBoundary(this.size - 1);
+        return last.data;
     }
 
     public T removeFirst() {
-        return null;
+        checkBoundary(0);
+        T old = first.data;
+        if (first.next == null) {
+            first = last = null;
+        } else {
+            first.next.prev = null;
+            first = first.next;
+        }
+        size--;
+        return old;
     }
 
     public T removeLast() {
-        return null;
+        checkBoundary(this.size - 1);
+        T old = last.data;
+        if (last == first) {
+            first = last = null;
+        } else {
+            last.prev.next = null;
+            last = last.prev;
+        }
+        size--;
+        return old;
     }
 
-    public T addFirst() {
-        return null;
+    public void addFirst(T ele) {
+        Node<T> newFirst = new Node<>(ele);
+        if (first == null) {
+            last = first = newFirst;
+        } else {
+            first.prev = newFirst;
+            newFirst.next = first;
+            first = newFirst;
+        }
+        size++;
     }
 
-    public T addLast() {
-        return null;
+    public void addLast(T ele) {
+        Node<T> newLast = new Node<>(ele);
+        if (last == null) {
+            last = first = newLast;
+        } else {
+            last.next = newLast;
+            newLast.prev = last;
+            last = newLast;
+        }
+        size++;
     }
 
-    public boolean conatins(Object ele) {
-        return false;
+    public boolean contains(Object ele) {
+        return indexFor(ele) != -1;
     }
 
     public int size() {
@@ -40,36 +77,55 @@ public class MyLinkedList<T> implements Iterable<T> {
     }
 
     public boolean add(T ele) {
-        if (first == null) {
-            last = first = new Node<>(ele);
-        } else {
-            Node newLast = new Node(ele, last);
-            last.next = newLast;
-            last = newLast;
-        }
-        size++;
+        addLast(ele);
         return true;
     }
 
     public boolean remove(Object ele) {
+        int index = indexFor(ele);
+        remove(index);
         return true;
+    }
+
+    private int indexFor(Object ele) {
+        Node temp = first;
+        if (null == ele) {
+            for (int i = 0; i < size; i++) {
+                if (null == ele) {
+                    return i;
+                }
+                temp = temp.next;
+            }
+        } else {
+            for (int i = 0; i < size; i++) {
+                if (ele.equals(first.data)) {
+                    return i;
+                }
+                temp = temp.next;
+            }
+        }
+        return -1;
     }
 
     public T get(int index) {
         checkRange(index);
         int half = this.size / 2;
         Node temp;
-        if (half >= index) {
+        if (half < index) {
             temp = last;
-            for (int i = this.size - 1; i >= half; i--) {
+            for (int i = this.size - 1; i > half; i--) {
                 if (i == index) {
-                    temp.prev.next = temp.next;
+                    return (T) temp.data;
                 }
+                temp = temp.prev;
             }
         } else {
             temp = first;
-            for (int i = 0; i < half; i++) {
-
+            for (int i = 0; i <= half; i++) {
+                if (i == index) {
+                    return (T) temp.data;
+                }
+                temp = temp.next;
             }
         }
         return null;
@@ -84,12 +140,20 @@ public class MyLinkedList<T> implements Iterable<T> {
     }
 
     public T remove(int index) {
+        checkBoundary(index);
+
         return null;
     }
 
     private void checkRange(int index) {
         if (index >= size) {
             throw new IndexOutOfBoundsException();
+        }
+    }
+
+    private void checkBoundary(int index) {
+        if (index >= size || index < 0) {
+            throw new NoSuchElementException();
         }
     }
 

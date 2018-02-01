@@ -1,14 +1,18 @@
 import DataStructuresAndAlgorithmAnalysisInJava.source.chapter3.link.MyLinkedList;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.LinkedList;
+import java.util.NoSuchElementException;
 
 public class MyLinkedListTest {
 
     @Test
     public void fun() {
         LinkedList<Integer> linkedList = new LinkedList<>();
+//        linkedList.removeFirst();
+        linkedList.getFirst();
         System.out.println(linkedList);
     }
 
@@ -17,13 +21,99 @@ public class MyLinkedListTest {
     @Before
     public void setUp() {
         list = new MyLinkedList<>();
+        list.add(1);
+        list.add(2);
+        list.add(3);
     }
 
     @Test
     public void normalAdd() {
-        list.add(1);
-        list.add(2);
-        list.add(3);
-        System.out.println(list);
+        Assert.assertEquals("[1, 2, 3]", list.toString());
+    }
+
+    @Test
+    public void removeFirst() {
+        Integer removeFirst = list.removeFirst();
+        Assert.assertEquals(1, (long) removeFirst);
+        Assert.assertEquals("[2, 3]", list.toString());
+        removeFirst = list.removeFirst();
+        Assert.assertEquals(2, (long) removeFirst);
+        Assert.assertEquals("[3]", list.toString());
+        removeFirst = list.removeFirst();
+        Assert.assertEquals(3, (long) removeFirst);
+        Assert.assertEquals("[]", list.toString());
+//        list.removeFirst();
+    }
+
+    @Test
+    public void removeLast() {
+        Integer removeLast = list.removeLast();
+        Assert.assertEquals(3, (long) removeLast);
+        Assert.assertEquals("[1, 2]", list.toString());
+        removeLast = list.removeLast();
+        Assert.assertEquals(2, (long) removeLast);
+        Assert.assertEquals("[1]", list.toString());
+        removeLast = list.removeLast();
+        Assert.assertEquals(1, (long) removeLast);
+        Assert.assertEquals("[]", list.toString());
+    }
+
+    @Test
+    public void mixRemove() {
+        Integer remove = list.removeFirst();
+        Assert.assertEquals(1, (long) remove);
+        Assert.assertEquals("[2, 3]", list.toString());
+        remove = list.removeLast();
+        Assert.assertEquals(3, (long) remove);
+        Assert.assertEquals("[2]", list.toString());
+    }
+
+    @Test
+    public void getFirstTest() {
+        Integer first = list.getFirst();
+        Assert.assertEquals(1, (long) first);
+        list.removeLast();
+        Assert.assertEquals(1, (long) list.getFirst());
+    }
+
+    @Test
+    public void getLastTest() {
+        Integer last = list.getLast();
+        Assert.assertEquals(3, (long) last);
+    }
+
+    @Test
+    public void addFirstTest() {
+        list.addFirst(10);
+        Assert.assertEquals("[10, 1, 2, 3]", list.toString());
+        MyLinkedList<Integer> linkedList = new MyLinkedList<>();
+        linkedList.addFirst(0);
+        Assert.assertEquals("[0]", linkedList.toString());
+    }
+
+    @Test
+    public void addLastTest() {
+        list.addLast(8);
+        Assert.assertEquals("[1, 2, 3, 8]", list.toString());
+        list.removeFirst();
+        Assert.assertEquals("[2, 3, 8]", list.toString());
+        list.addLast(4);
+        Assert.assertEquals("[2, 3, 8, 4]", list.toString());
+    }
+
+    @Test
+    public void getTest() {
+        Assert.assertEquals(2, (long) list.get(1));
+        Assert.assertEquals(3, (long) list.get(2));
+        list.addLast(8);
+        list.addFirst(9);
+        Assert.assertEquals(8, (long) list.get(4));
+    }
+
+    @Test
+    public void containsTest() {
+        Assert.assertEquals(true, list.contains(3));
+        Assert.assertEquals(false, list.contains(8));
+        Assert.assertEquals(false,list.contains(null));
     }
 }
