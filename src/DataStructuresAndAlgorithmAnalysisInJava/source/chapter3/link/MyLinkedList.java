@@ -57,27 +57,11 @@ public class MyLinkedList<T> implements Iterable<T> {
     }
 
     public void addFirst(T ele) {
-        Node<T> newFirst = new Node<>(ele);
-        if (first == null) {
-            last = first = newFirst;
-        } else {
-            first.prev = newFirst;
-            newFirst.next = first;
-            first = newFirst;
-        }
-        size++;
+        linkFirst(ele);
     }
 
     public void addLast(T ele) {
-        Node<T> newLast = new Node<>(ele);
-        if (last == null) {
-            last = first = newLast;
-        } else {
-            last.next = newLast;
-            newLast.prev = last;
-            last = newLast;
-        }
-        size++;
+        linkLast(ele);
     }
 
     public boolean contains(Object ele) {
@@ -117,88 +101,46 @@ public class MyLinkedList<T> implements Iterable<T> {
 
     public T get(int index) {
         checkBoundary(index);
-        int half = this.size >> 1;
-        Node temp;
-        if (half < index) {
-            temp = last;
-            for (int i = this.size - 1; i > half; i--) {
-                if (i == index) {
-                    return (T) temp.data;
-                }
-                temp = temp.prev;
-            }
-        } else {
-            temp = first;
-            for (int i = 0; i <= half; i++) {
-                if (i == index) {
-                    return (T) temp.data;
-                }
-                temp = temp.next;
-            }
-        }
-        return null;
+        return (T) node(index).data;
     }
 
     public T set(int index, T ele) {
         checkBoundary(index);
-        int half = this.size >> 1;
-        if (index > half) {
-            Node temp = last;
-            for (int i = size - 1; i > half; i--) {
-                if (i == index) {
-                    T old = (T) temp.data;
-                    temp.data = ele;
-                    return old;
-                }
-                temp = temp.prev;
-            }
-        } else {
-            Node temp = first;
-            for (int i = 0; i <= half; i++) {
-                if (i == index) {
-                    T old = (T) temp.data;
-                    temp.data = ele;
-                    return old;
-                }
-                temp = temp.next;
-            }
-        }
-        return null;
+        Node replacedNode = node(index);
+        T old = (T) replacedNode.data;
+        replacedNode.data = ele;
+        return old;
+//        int half = this.size >> 1;
+//        if (index > half) {
+//            Node temp = last;
+//            for (int i = size - 1; i > half; i--) {
+//                if (i == index) {
+//                    T old = (T) temp.data;
+//                    temp.data = ele;
+//                    return old;
+//                }
+//                temp = temp.prev;
+//            }
+//        } else {
+//            Node temp = first;
+//            for (int i = 0; i <= half; i++) {
+//                if (i == index) {
+//                    T old = (T) temp.data;
+//                    temp.data = ele;
+//                    return old;
+//                }
+//                temp = temp.next;
+//            }
+//        }
+//        return null;
     }
 
     public void add(int index, T ele) {
         checkRange(index);
-        if (index == 0) {
-            addFirst(ele);
-        } else if (index == size) {
-            addLast(ele);
+        if (index == size) {
+            linkLast(ele);
         } else {
-            int half = index >> 1;
-            if (index > half) {
-                Node temp = last;
-                for (int i = size - 1; i > half; i--) {
-                    if (i == index) {
-                        Node newNode = new Node(ele, temp.prev, temp);
-                        temp.prev.next = newNode;
-                        temp.next.prev = newNode;
-                        size++;
-                        return;
-                    }
-                    temp = last.prev;
-                }
-            } else {
-                Node temp = first;
-                for (int i = 0; i <= half; i++) {
-                    if (i == index) {
-                        Node<T> newNode = new Node<>(ele, temp.prev, temp);
-                        temp.prev.next = newNode;
-                        temp.next.prev = newNode;
-                        size++;
-                        return;
-                    }
-                    temp = first.next;
-                }
-            }
+            linkBefore(ele, node(index));
         }
     }
 
@@ -282,23 +224,34 @@ public class MyLinkedList<T> implements Iterable<T> {
 
     /**
      * 根据索引查找对应的节点对象
-     * 时间复杂度:O(n)
+     * 时间复杂度:O(logN)
+     * <p>
+     *     值得学习的点：
+     *     1. 折半查找，减少时间复杂度
+     *     2. 遍历时的上限/下限都不是 size/2
+     *     由于只需找到对应索引位置的节点，而目标节点的下标可能在{ [0~size/2]或者[size/2~size] }中间一点，
+     *     所以循环的下标也不要写死成长度的一半
+     * </p>
      *
      * @param index
      * @return
      */
     private Node node(int index) {
         checkBoundary(index);
-        Node temp = first;
-        for (int i = 0; i < size; i++) {
-            if (i == index) {
-                return temp;
+        if (index > (index >> 1)) {
+            Node temp = last;
+            for (int i = size - 1; i > index; i--) {
+                temp = temp.prev;
             }
-            temp = temp.next;
+            return temp;
+        } else {
+            Node temp = first;
+            for (int i = 0; i < index; i++) {
+                temp = temp.next;
+            }
+            return temp;
         }
-        return temp;
     }
-
 
     /**
      * 移除一个非空节点
@@ -376,6 +329,38 @@ public class MyLinkedList<T> implements Iterable<T> {
          */
 
         return old;
+    }
+
+    private void linkBefore(T ele, @NotNull Node<T> succ) {
+        final Node prev = succ.prev;
+        Node newNode = new Node(ele, prev, succ);
+        succ.prev = newNode;
+        if (prev == null) {
+            first = newNode;
+        } else {
+            prev.next = newNode;
+        }
+        size++;
+    }
+
+    private void linkLast(T ele) {
+        Node newLast = new Node(ele, last, null);
+        if (last == null) {
+            first = last = newLast;
+        } else {
+            last.next = newLast;
+            last = newLast;
+        }
+        size++;
+    }
+
+    private void linkFirst(T ele) {
+        if (first == null) {
+            first = last = new Node<T>(ele, null, null);
+            size++;
+        } else {
+            linkBefore(ele, first);
+        }
     }
 
     private class Node<T> {
