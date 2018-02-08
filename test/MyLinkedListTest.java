@@ -4,14 +4,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.LinkedList;
-import java.util.NoSuchElementException;
 
 public class MyLinkedListTest {
 
     @Test
     public void fun() {
         LinkedList<Integer> linkedList = new LinkedList<>();
-        linkedList.add(2);
+        linkedList.add(0, 1);
 //        linkedList.set(1, 1);
 //        linkedList.removeFirst();
 //        linkedList.getFirst();
@@ -124,6 +123,40 @@ public class MyLinkedListTest {
         Integer remove = list.remove(1);
         Assert.assertEquals(2, (long) remove);
         Assert.assertEquals("[1, 3]", list.toString());
+
+        MyLinkedList<String> linkedList = new MyLinkedList<>();
+        linkedList.add("1");
+        linkedList.add("4");
+        linkedList.addLast("9");
+        linkedList.addFirst("0");
+
+        Assert.assertEquals("[0, 1, 4, 9]", linkedList.toString());
+
+        linkedList.remove("4");
+        Assert.assertEquals("[0, 1, 9]", linkedList.toString());
+        linkedList.remove("0");
+        Assert.assertEquals("[1, 9]", linkedList.toString());
+    }
+
+    @Test
+    public void addIndexTest() {
+        MyLinkedList<String> linkedList = new MyLinkedList<>();
+        linkedList.add(0, "1");
+        linkedList.add(0, "9");
+        linkedList.add(2, "2");
+        linkedList.add(1, "6");
+        Assert.assertEquals("[9, 6, 1, 2]", linkedList.toString());
+    }
+
+    @Test
+    public void setTest() {
+        list.set(0, -2);
+        list.set(2, 0);
+        Assert.assertEquals("[-2, 2, 0]", list.toString());
+        list.set(0, 100);
+        Assert.assertEquals("[100, 2, 0]", list.toString());
+        list.set(1, 50);
+        Assert.assertEquals("[100, 50, 0]", list.toString());
     }
 
 }
