@@ -1,4 +1,4 @@
-package algorithms.exercise.chapter1.DataAbstraction;
+package algorithms.exercise.chapter1.FundamentalsModel;
 
 import algorithms.source.chapter1.FundamentalsModel.StdIn;
 
